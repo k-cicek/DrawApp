@@ -8,6 +8,8 @@ function App() {
   //çizim durumunu tutan state
   const [isDrawing, setIsDrawing] = useState(false);
   const [context, setContext] = useState(null);
+  const [brushSize, setBrushSize] = useState(2);
+  const [brushColor, setBrushColor] = useState("#000000");
 
   //canvas elementine erişilir ve context state'ine atanır.
   useEffect(() => {
@@ -28,6 +30,13 @@ function App() {
   const draw = (e) => {
     if (!isDrawing) return;
     const { offsetX, offsetY } = e.nativeEvent;
+
+    //kalem boyutu ayarlanır.
+    context.lineWidth = brushSize;
+
+    //kalem rengi ayarlanır.
+    context.strokeStyle = brushColor;
+
     context.lineTo(offsetX, offsetY);
     context.stroke();
   };
@@ -39,14 +48,36 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div>
       <canvas
+        className="cursor-crosshair	border border-solid border-black"
+        width={800}
+        height={500}
         ref={canvasRef}
         onMouseDown={startDrawing}
         onMouseMove={draw}
         onMouseUp={finishDrawing}
         onMouseOut={finishDrawing}
       ></canvas>
+      <label htmlFor="brushSize">Pen Size:</label>
+      <input
+        type="range"
+        id="brushSize"
+        name="brushSize"
+        min="1"
+        max="20"
+        value={brushSize}
+        onChange={(e) => setBrushSize(parseInt(e.target.value))}
+      />
+
+      <label htmlFor="brushColor">Pen Color:</label>
+      <input
+        type="color"
+        id="brushColor"
+        name="brushColor"
+        value={brushColor}
+        onChange={(e) => setBrushColor(e.target.value)}
+      />
     </div>
   );
 }
