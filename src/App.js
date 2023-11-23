@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
-import { FaEraser, FaTimes, FaUndo } from "react-icons/fa";
+import { FaEraser, FaUndo } from "react-icons/fa";
+import Canvas from "./components/Canvas";
+import BrushSizeSelector from "./components/BrushSizeSelector";
+import ColorPalette from "./components/ColorPalette";
 
 function App() {
   //canvasRef çizim yapılacak olan canvas elementine referans oluyor.
@@ -10,9 +13,11 @@ function App() {
   const [isDrawing, setIsDrawing] = useState(false);
   const [context, setContext] = useState(null);
   const [brushSize, setBrushSize] = useState(2);
-  const [brushColor, setBrushColor] = useState("#000000");
+  const [brushColor, setBrushColor] = useState("#3A4D39");
   const [isEraser, setEraser] = useState(false);
   const [drawHistory, setDrawHistory] = useState([]);
+
+  const colorPalette = ["#F9B572", "#A9B388", "#FEFAE0", "#B99470"];
 
   //canvas elementine erişilir ve context state'ine atanır.
   useEffect(() => {
@@ -109,49 +114,49 @@ function App() {
 
   return (
     <div className="">
-      <canvas
-        className="cursor-crosshair	border border-solid border-black"
-        width={800}
-        height={500}
-        ref={canvasRef}
-        onMouseDown={startDrawing}
-        onMouseMove={draw}
-        onMouseUp={finishDrawing}
-        onMouseOut={finishDrawing}
-      ></canvas>
-      <div className="flex flex-row justify-between">
-        <div>
-          <label htmlFor="brushSize">Pen Size:</label>
-          <input
-            type="range"
-            id="brushSize"
-            name="brushSize"
-            min="1"
-            max="20"
-            value={brushSize}
-            onChange={(e) => setBrushSize(parseInt(e.target.value))}
-          />
-        </div>
-        <div>
-          <label htmlFor="brushColor">Pen Color:</label>
-          <input
-            type="color"
-            id="brushColor"
-            name="brushColor"
-            value={brushColor}
-            onChange={(e) => setBrushColor(e.target.value)}
-          />
-        </div>
-
-        <button onClick={toggleEraser}>
-          <FaEraser />
-        </button>
-        <button onClick={clearCanvas}>
-          <FaTimes />
-        </button>
-        <button onClick={undoDraw}>
+      <div className="flex justify-between items-center my-2">
+        <button
+          className="bg-[#FEFAE0] px-4 py-2 rounded-full text-[#B99470]"
+          onClick={undoDraw}
+        >
           <FaUndo />
         </button>
+        <button
+          className="bg-[#FEFAE0] px-4 py-2 rounded-full text-[#B99470]"
+          onClick={clearCanvas}
+        >
+          Clear All
+        </button>
+      </div>
+      <Canvas
+        startDrawing={startDrawing}
+        draw={draw}
+        finishDrawing={finishDrawing}
+        canvasRef={canvasRef}
+        brushSize={brushSize}
+        brushColor={brushColor}
+        isEraser={isEraser}
+      />
+      <div className="flex flex-row justify-between py-4 px-2 bg-[#5F6F52]">
+        <BrushSizeSelector
+          brushSize={brushSize}
+          setBrushSize={setBrushSize}
+          setEraser={setEraser}
+        />
+
+        <ColorPalette
+          colorPalette={colorPalette}
+          brushColor={brushColor}
+          setBrushColor={setBrushColor}
+        />
+        <div className="flex items-center">
+          <button
+            className="bg-[#FEFAE0] p-4 rounded-full text-[#B99470]"
+            onClick={toggleEraser}
+          >
+            <FaEraser size={20} />
+          </button>
+        </div>
       </div>
     </div>
   );
